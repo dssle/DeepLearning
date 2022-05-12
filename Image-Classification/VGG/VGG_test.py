@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from VGG_utils import tran
 import os
+import time
 import PIL.Image as Image
 import torch.nn.functional as F
 

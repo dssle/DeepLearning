@@ -219,18 +219,50 @@ import time
 #     return dir + str(n) + ('_' + comment if comment else '')
 #
 # increment_dir('./VGG/results/yes')
-import os
-def write_result(list):
-    dir = './'
-    file_No = 1
-    while(True):
-        file_name = "{}result{}.txt".format(dir, file_No)
-        if not os.path.exists(file_name):
-            with open(file_name,'w') as file:
-                list = str(list)
-                file.write(list)
-                break
-        else:
-            file_No += 1
-list = [1,2,3]
-write_result(list)
+# import os
+# def write_result(list):
+#     dir = './'
+#     file_No = 1
+#     while(True):
+#         file_name = "{}result{}.txt".format(dir, file_No)
+#         if not os.path.exists(file_name):
+#             with open(file_name,'w') as file:
+#                 list = str(list)
+#                 file.write(list)
+#                 break
+#         else:
+#             file_No += 1
+# list = [1,2,3]
+# write_result(list)
+
+import time
+
+write_time = time.asctime(time.localtime())
+write_time2 = time.asctime()
+# write_time3 = time.asctime(time.time())
+# print(write_time,'\n',type(write_time2))
+
+# List = ['yes']
+# file = open('./result1.txt','a')
+# file.write(str(List))
+# file.write('\n')
+# file.write(str([write_time]))
+# file.close()
+#
+file = open('./result1.txt','r')
+# for file1 in file.readline():
+# file1 = file.readline()
+file1 = file.readlines()
+# print(eval(file1[0]))
+for i in file1:
+    file2 = eval(i)
+    print(file2)
+print(file1)
+print('1')
+# print(type(file2))
+# print(file2)
+pass
+
+# Str = file.readlines()
+# for line in Str:
+#     List = eval(line)

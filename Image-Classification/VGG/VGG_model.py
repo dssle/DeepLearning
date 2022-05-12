@@ -1,5 +1,6 @@
 import torch.nn as nn
 import torch
+import torchsummary as ts
 
 # official pretrain weights
 model_urls = {
@@ -75,3 +76,7 @@ def vgg(model_name="vgg16", **kwargs):
 
     model = VGG(make_features(cfg), **kwargs)
     return model
+
+# net = vgg("vgg16",num_classes=1000, init_weights=True).to("cuda")
+# ts.summary(net,(3,224,224))
+

@@ -44,10 +44,14 @@ def plot_history1(epoches, Acc, Loss, lr):
     plt.show()
 
 # 画图简介版，先将结果保存至txt文件，再从txt中提取结果输入至画图函数，程序结束后还能画
-def plot_history2():
-    with open("./results/result.txt","r") as file:
-        Str = file.read()
-        List = eval(Str)
+# file_name 是txt的文件名
+def plot_history2(file_name):
+    dir = './results/{}'.format(file_name)
+    with open(dir,"r") as file:
+        # 按照行读取，并封装成列表（一行一个元素）返回（Str）
+        Str = file.readlines()
+        # 取第一行的数据，并用eval把换行符去掉
+        List = eval(Str[0])
 
         epoches = List[1]
         Loss = List[2]
@@ -99,7 +103,7 @@ def cal_time(start_time,end_time):
     print('Program is completed, using {:.1f}h {:.1f}m {:.1f}s'.format(hours,mins,second))
 
 # 按顺序生成txt文件，并将传入的list写入txt文件，注意如果中间有txt被删除则在中间生成，如1.txt，3.txt，那么会生成2.txt而不是4.txt
-def write_result(list):
+def write_result(list,write_time):
     dir = './results/'
     file_No = 1
     while(True):
@@ -108,6 +112,8 @@ def write_result(list):
             with open(file_name,'w') as file:
                 list = str(list)
                 file.write(list)
+                file.write('\n')
+                file.write(str([write_time]))
                 break
         else:
             file_No += 1

@@ -66,7 +66,7 @@ def train(batch_size,epoch,data_root,model_path):
     assert os.path.exists(model_weight_path),'file {} is not exist'.format(model_weight_path)
     net.load_state_dict(torch.load(model_weight_path))
 
-    # 重些head部分
+    # 重写head部分
     in_channel = net.fc.in_features
     net.fc = nn.Linear(in_channel,5)
     net = net.to(device)

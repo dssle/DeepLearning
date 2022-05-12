@@ -1,5 +1,4 @@
 from VGG_model import vgg
-
 import os.path
 import sys
 import torch
@@ -8,6 +7,7 @@ import torchvision.datasets as datasets
 import torchvision.transforms as transforms
 import torch.nn as nn
 from tqdm import tqdm
+import time
 from VGG_utils import get_acc,plot_history1,write_result
 
 def train(batch_size,epoch,data_root,model_path,record_result=False):
@@ -55,13 +55,28 @@ def train(batch_size,epoch,data_root,model_path,record_result=False):
     print("Using %s device." % device)
 
 
-
-    # 实例化网络,如果此时传入参数则让net与导入的权重网络不符
+    # 实例化网络
     model_name = ['vgg11', 'vgg13', 'vgg16', 'vgg19']
-    net = vgg(model_name[2],num_classes=5, init_weights=True)
+    # net = vgg(model_name[2],num_classes=5, init_weights=True)
+    # net = net.to(device)
+
+    # 迁移学习
+    net = vgg(model_name[2])
+    model_weight_path = "./model_pre/vgg16_pre.pth"
+    assert os.path.exists(model_weight_path),'file {} is not exist'.format(model_weight_path)
+    net.load_state_dict(torch.load(model_weight_path))
+
+    num_classes = 5
+    net.classifier = nn.Sequential(
+        nn.Linear(512 * 7 * 7, 4096),
+        nn.ReLU(True),
+        nn.Dropout(p=0.5),
+        nn.Linear(4096, 4096),
+        nn.ReLU(True),
+        nn.Dropout(p=0.5),
+        nn.Linear(4096, num_classes)
+    )
     net = net.to(device)
-
-
 
 
     # 设置优化器、损失函数和学习率优化器
@@ -154,7 +169,7 @@ def train(batch_size,epoch,data_root,model_path,record_result=False):
     # 将所有结果参数封装成字典，并放进列表，写入txt文件
     if record_result:
         List = []
-
+        write_time = time.asctime(time.localtime())
         Batch_size = {'batch_size':batch_size}
         Epoch = {'epoch':epoch}
 
@@ -163,8 +178,7 @@ def train(batch_size,epoch,data_root,model_path,record_result=False):
         List.append(Loss)
         List.append(Acc)
         List.append(Lr)
-        print(List)
-        write_result(List)
+        write_result(List,write_time)
 
     return Loss,Acc,Lr
 
