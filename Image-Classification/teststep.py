@@ -249,20 +249,61 @@ write_time2 = time.asctime()
 # file.write(str([write_time]))
 # file.close()
 #
-file = open('./result1.txt','r')
+# file = open('./result1.txt','r')
 # for file1 in file.readline():
 # file1 = file.readline()
-file1 = file.readlines()
+# file1 = file.readlines()
 # print(eval(file1[0]))
-for i in file1:
-    file2 = eval(i)
-    print(file2)
-print(file1)
-print('1')
-# print(type(file2))
-# print(file2)
-pass
+# for i in file1:
+#     file2 = eval(i)
+#     print(file2)
+# print(file1)
+# print('1')
+# # print(type(file2))
+# # print(file2)
+# pass
 
 # Str = file.readlines()
 # for line in Str:
 #     List = eval(line)
+
+
+# class BasicConv2d(nn.Module):
+#     def __init__(self, in_channels, out_channels, **kwargs):
+#         super(BasicConv2d, self).__init__()
+#         self.conv = nn.Conv2d(in_channels, out_channels, **kwargs)
+#         self.relu = nn.ReLU(inplace=True)
+#
+#     def forward(self, x):
+#         x = self.conv(x)
+#         x = self.relu(x)
+#         return x
+#
+# net = BasicConv2d(1,2,stride = 1,kernel_size =3)
+# def on (b,ok=1):
+#     print('no')
+#     print('ok',ok)
+# def yes(a,**kwargs):
+#     print("yes")
+#     print(kwargs)
+#     on(2,**kwargs)
+# yes(1,ok = 2)
+
+# def yes(a):
+#     if a:
+#         return "1"
+#     return '2'
+# b = yes(0)
+# print(b)
+from torchvision.models import GoogLeNet
+net = GoogLeNet(num_classes=5, aux_logits=True, init_weights=True).to('cuda')
+training = net.training
+print(training)
+net.train()
+training = net.training
+print(training)
+net.eval()
+training = net.training
+print(training)
+
+
