@@ -1,4 +1,4 @@
-from GoogLeNet_model import GoogLeNet
+# from GoogLeNet_model import GoogLeNet
 from torchvision.models import GoogLeNet
 import os.path
 import sys
@@ -57,10 +57,27 @@ def train(batch_size,epoch,data_root,model_path,record_result=False):
 
 
     # 实例化网络
-    net = GoogLeNet(num_classes=5,aux_logits=True,init_weights=True)
-    net = net.to(device)
+    # net = GoogLeNet(num_classes=5,aux_logits=True,init_weights=True)
+    # net = net.to(device)
 
     # 迁移学习
+    net = GoogLeNet(num_classes=5)
+    # 导出模型权重
+    model_dict = net.state_dict()
+    # 导入预训练模型权重
+    pretrain_model = torch.load('./model_pre/googlenet_pre.pth')
+    # 排除分类器最后连接层的权重
+    # 排除主分类器最后一层全连接层，辅助分类器最后一层全连接层的权重和偏置，其他更换为预训练模型权重
+    del_list = ["aux1.fc2.weight", "aux1.fc2.bias",
+                "aux2.fc2.weight", "aux2.fc2.bias",
+                 "fc.weight", "fc.bias"]
+    # 提取所需的预训练模型权重
+    pretrain_dict = {k: v for k, v in pretrain_model.items() if k not in del_list}
+    # 更新模型权重
+    model_dict.update(pretrain_dict)
+    # 网络载入新的权重
+    net.load_state_dict(model_dict)
+    net = net.to(device)
 
     # 设置优化器、损失函数和学习率优化器
     optimizer = optim.SGD(net.parameters(),lr=3e-3,momentum=0.9,weight_decay=5e-4)
@@ -167,8 +184,8 @@ def train(batch_size,epoch,data_root,model_path,record_result=False):
         List.append(Loss)
         List.append(Acc)
         List.append(Lr)
-        write_result(List,write_time)
-
+        file_name = write_result(List,write_time)
+        print('The result is wroten in {}'.format(file_name))
     return Loss,Acc,Lr
 
 if __name__ == '__main__':

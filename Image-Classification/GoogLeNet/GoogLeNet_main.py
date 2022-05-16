@@ -6,7 +6,7 @@ import time
 
 if __name__  ==  '__main__':
     batch_size = 8
-    epoch = 5
+    epoch = 2
     data_root = 'D:/StudyDatasets/flower_photos/dataset'
     model_path = './model'
 

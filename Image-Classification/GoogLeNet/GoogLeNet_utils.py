@@ -105,11 +105,15 @@ def cal_time(start_time,end_time):
 # 按顺序生成txt文件，并将传入的list写入txt文件，注意如果中间有txt被删除则在中间生成，如1.txt，3.txt，那么会生成2.txt而不是4.txt
 def write_result(list,write_time):
     dir = './results/'
+    if not os.path.exists(dir):
+        print("Generate the directory of result")
+        os.makedirs(dir)
     file_No = 1
     while(True):
-        file_name = "{}result{}.txt".format(dir, file_No)
-        if not os.path.exists(file_name):
-            with open(file_name,'w') as file:
+        file_name = "result{}.txt".format(file_No)
+        file_dir = dir + file_name
+        if not os.path.exists(file_dir):
+            with open(file_dir,'w') as file:
                 list = str(list)
                 file.write(list)
                 file.write('\n')
@@ -117,3 +121,5 @@ def write_result(list,write_time):
                 break
         else:
             file_No += 1
+
+    return file_name
