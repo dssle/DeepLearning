@@ -1,19 +1,19 @@
-from VGG_train import train
-from VGG_utils import plot_history1,plot_history2,cal_time,write_result
-from VGG_test import  AccuracyAll,AccuracySim,ShowPart
+from AlexNet_train import train
+from AlexNet_utils import plot_history1,plot_history2,cal_time,write_result
+from AlexNet_test import  AccuracyAll,AccuracySim,ShowPart
 import time
 
 
 if __name__  ==  '__main__':
     batch_size = 8
-    epoch = 1
+    epoch = 2
     data_root = 'D:/StudyDatasets/flower_photos/dataset'
     model_path = './model'
 
     start_time = time.time()
 
     # Loss,Acc,Lr = train(batch_size,epoch,data_root,model_path,record_result=True)
-    plot_history2("result2.txt")
+    plot_history2("result1.txt")
 
     AccuracyAll(batch_size,data_root,model_path)
 

@@ -57,27 +57,28 @@ def train(batch_size,epoch,data_root,model_path,record_result=False):
 
     # 实例化网络
     model_name = ['vgg11', 'vgg13', 'vgg16', 'vgg19']
-    # net = vgg(model_name[2],num_classes=5, init_weights=True)
-    # net = net.to(device)
-
-    # 迁移学习
-    net = vgg(model_name[2])
-    model_weight_path = "./model_pre/vgg16_pre.pth"
-    assert os.path.exists(model_weight_path),'file {} is not exist'.format(model_weight_path)
-    net.load_state_dict(torch.load(model_weight_path))
-
-    num_classes = 5
-    net.classifier = nn.Sequential(
-        nn.Linear(512 * 7 * 7, 4096),
-        nn.ReLU(True),
-        nn.Dropout(p=0.5),
-        nn.Linear(4096, 4096),
-        nn.ReLU(True),
-        nn.Dropout(p=0.5),
-        nn.Linear(4096, num_classes)
-    )
+    net = vgg(model_name[2],num_classes=5, init_weights=True)
     net = net.to(device)
 
+
+
+    # 迁移学习
+    # net = vgg(model_name[2])
+    # model_weight_path = "./model_pre/vgg16_pre.pth"
+    # assert os.path.exists(model_weight_path),'file {} is not exist'.format(model_weight_path)
+    # net.load_state_dict(torch.load(model_weight_path))
+    #
+    # num_classes = 5
+    # net.classifier = nn.Sequential(
+    #     nn.Linear(512 * 7 * 7, 4096),
+    #     nn.ReLU(True),
+    #     nn.Dropout(p=0.5),
+    #     nn.Linear(4096, 4096),
+    #     nn.ReLU(True),
+    #     nn.Dropout(p=0.5),
+    #     nn.Linear(4096, num_classes)
+    # )
+    # net = net.to(device)
 
     # 设置优化器、损失函数和学习率优化器
     optimizer = optim.SGD(net.parameters(),lr=1e-3,momentum=0.9,weight_decay=5e-4)
@@ -178,7 +179,8 @@ def train(batch_size,epoch,data_root,model_path,record_result=False):
         List.append(Loss)
         List.append(Acc)
         List.append(Lr)
-        write_result(List,write_time)
+        file_name = write_result(List,write_time)
+        print('The result is written in {}'.format(file_name))
 
     return Loss,Acc,Lr
 

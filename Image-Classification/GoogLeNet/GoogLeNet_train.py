@@ -185,7 +185,7 @@ def train(batch_size,epoch,data_root,model_path,record_result=False):
         List.append(Acc)
         List.append(Lr)
         file_name = write_result(List,write_time)
-        print('The result is wroten in {}'.format(file_name))
+        print('The result is written in {}'.format(file_name))
     return Loss,Acc,Lr
 
 if __name__ == '__main__':

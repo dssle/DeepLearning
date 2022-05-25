@@ -1,4 +1,3 @@
-import torch
 import torch.nn as nn
 import torchsummary as ts
 
@@ -63,10 +62,9 @@ class AlexNet (nn.Module):
                 nn.init.normal_(m.weight,0,0.01)
                 nn.init.constant_(m.bias,0)
 # 实例化并可视化网络
-# device  = 'cuda' if torch.cuda.is_available() else 'cpu'
-# net = AlexNet(10,True).to(device)
+# net = AlexNet(5,init_weight=False).to('cuda')
 # ts.summary(net,(3,224,224))
-# pass
+
 
 
 

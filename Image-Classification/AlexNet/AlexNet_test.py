@@ -3,8 +3,9 @@ import torchvision.transforms as transforms
 import torchvision.datasets as datasets
 import numpy as np
 import matplotlib.pyplot as plt
-from utils_AlexNet import tran
+from AlexNet_utils import tran
 import os
+import time
 import PIL.Image as Image
 import torch.nn.functional as F
 

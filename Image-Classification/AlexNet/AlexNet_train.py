@@ -1,5 +1,4 @@
-# from torchvision.models.resnet import resnet34
-from resnet_model import  resnet34
+from AlexNet_model import AlexNet
 import os.path
 import sys
 import torch
@@ -9,7 +8,7 @@ import torchvision.transforms as transforms
 import torch.nn as nn
 from tqdm import tqdm
 import time
-from resnet_utils import get_acc,plot_history1,write_result
+from AlexNet_utils import get_acc,plot_history1,write_result
 
 def train(batch_size,epoch,data_root,model_path,record_result=False):
 
@@ -19,13 +18,12 @@ def train(batch_size,epoch,data_root,model_path,record_result=False):
                     transforms.RandomResizedCrop(224),
                     transforms.RandomHorizontalFlip(),
                     transforms.ToTensor(),
-                    transforms.Normalize((0.485,0.456,0.406),(0.229,0.224,0.225))
+                    transforms.Normalize((0.5,0.5,0.5),(0.5,0.5,0.5))
         ]),
         'val':transforms.Compose([
-                    transforms.Resize(256),
-                    transforms.CenterCrop(224),
+                    transforms.Resize((224,224)),
                     transforms.ToTensor(),
-                    transforms.Normalize((0.485,0.456,0.406),(0.229,0.224,0.225))
+                    transforms.Normalize((0.5,0.5,0.5),(0.5,0.5,0.5))
         ]),
     }
 
@@ -57,21 +55,10 @@ def train(batch_size,epoch,data_root,model_path,record_result=False):
     print("Using %s device." % device)
 
 
-
-    # 实例化网络,如果此时传入参数则让net与导入的权重网络不符
-    net = resnet34()
+    # 实例化网络
+    net = AlexNet(num_classes=5, init_weight=True)
     net = net.to(device)
 
-    # 迁移学习
-    # 加载权重
-    # model_weight_path = './model_pre/resnet34_pre.pth'
-    # assert os.path.exists(model_weight_path),'file {} is not exist'.format(model_weight_path)
-    # net.load_state_dict(torch.load(model_weight_path))
-    #
-    # # 重写head部分
-    # in_channel = net.fc.in_features
-    # net.fc = nn.Linear(in_channel,5)
-    # net = net.to(device)
 
     # 设置优化器、损失函数和学习率优化器
     optimizer = optim.SGD(net.parameters(),lr=1e-3,momentum=0.9,weight_decay=5e-4)
@@ -160,18 +147,19 @@ def train(batch_size,epoch,data_root,model_path,record_result=False):
     Loss['test_loss'] = test_loss_list
     Lr = lr_list
 
+    # 将所有结果参数封装成字典，并放进列表，写入txt文件
     if record_result:
         List = []
         write_time = time.asctime(time.localtime())
-        Batch_size = {'batch_size': batch_size}
-        Epoch = {'epoch': epoch}
+        Batch_size = {'batch_size':batch_size}
+        Epoch = {'epoch':epoch}
 
         List.append(Batch_size)
         List.append(Epoch)
         List.append(Loss)
         List.append(Acc)
         List.append(Lr)
-        file_name = write_result(List, write_time)
+        file_name = write_result(List,write_time)
         print('The result is written in {}'.format(file_name))
     return Loss,Acc,Lr
 
@@ -179,10 +167,12 @@ if __name__ == '__main__':
     # Loss,Acc,Lr = train(epoch=2,batch_size=4)
     # plot_history(2,Acc, Loss, Lr)
 
-    batch_size = 32
+    batch_size = 8
     epoch = 2
     data_root = 'D:/StudyDatasets/flower_photos/dataset'
     model_path = './model'
 
     Loss,Acc,Lr = train(batch_size,epoch,data_root,model_path)
     plot_history1(epoch, Acc, Loss, Lr)
+
+

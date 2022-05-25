@@ -1,3 +1,4 @@
+from LeNet_model import LeNet5
 import os.path
 import sys
 import torch
@@ -6,24 +7,21 @@ import torchvision.datasets as datasets
 import torchvision.transforms as transforms
 import torch.nn as nn
 from tqdm import tqdm
-from AlexNet import AlexNet
-from utils_AlexNet import get_acc,plot_history
+import time
+from LeNet_utils import get_acc,plot_history1,write_result
 
-def train(batch_size,epoch,data_root,model_path):
+def train(batch_size,epoch,data_root,model_path,record_result=False):
 
     # 数据增强
     data_transform = {
         'train': transforms.Compose([
-                    transforms.Resize([224,224]),
-                    transforms.RandomCrop(224,padding=4),
+                    transforms.RandomResizedCrop(224),
                     transforms.RandomHorizontalFlip(),
                     transforms.ToTensor(),
                     transforms.Normalize((0.5,0.5,0.5),(0.5,0.5,0.5))
         ]),
         'val':transforms.Compose([
-                    transforms.Resize([224,224]),
-                    transforms.RandomCrop(224,padding=4),
-                    transforms.RandomHorizontalFlip(),
+                    transforms.Resize((224,224)),
                     transforms.ToTensor(),
                     transforms.Normalize((0.5,0.5,0.5),(0.5,0.5,0.5))
         ]),
@@ -56,9 +54,11 @@ def train(batch_size,epoch,data_root,model_path):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print("Using %s device." % device)
 
+
     # 实例化网络
-    net = AlexNet(num_classes=5,init_weight=True)
+    net = LeNet5()
     net = net.to(device)
+
 
     # 设置优化器、损失函数和学习率优化器
     optimizer = optim.SGD(net.parameters(),lr=1e-3,momentum=0.9,weight_decay=5e-4)
@@ -146,31 +146,33 @@ def train(batch_size,epoch,data_root,model_path):
     Loss['train_loss'] = train_loss_list
     Loss['test_loss'] = test_loss_list
     Lr = lr_list
+
+    # 将所有结果参数封装成字典，并放进列表，写入txt文件
+    if record_result:
+        List = []
+        write_time = time.asctime(time.localtime())
+        Batch_size = {'batch_size':batch_size}
+        Epoch = {'epoch':epoch}
+
+        List.append(Batch_size)
+        List.append(Epoch)
+        List.append(Loss)
+        List.append(Acc)
+        List.append(Lr)
+        file_name = write_result(List,write_time)
+        print('The result is written in {}'.format(file_name))
     return Loss,Acc,Lr
 
 if __name__ == '__main__':
     # Loss,Acc,Lr = train(epoch=2,batch_size=4)
     # plot_history(2,Acc, Loss, Lr)
 
-    batch_size = 16
-    epoch = 10
-    data_root = 'D:/LearningModels/Datasets/flower_photos/dataset'
+    batch_size = 8
+    epoch = 2
+    data_root = 'D:/StudyDatasets/flower_photos/dataset'
     model_path = './model'
 
     Loss,Acc,Lr = train(batch_size,epoch,data_root,model_path)
-    plot_history(epoch, Acc, Loss, Lr)
-
-
-
-
-
-
-
-
-
-
-
-
-
+    plot_history1(epoch, Acc, Loss, Lr)
 
 
